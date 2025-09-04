@@ -1,4 +1,3 @@
-// Заглушка API для теста
 export async function getProducts() {
   return {
     products: [
@@ -8,8 +7,10 @@ export async function getProducts() {
         description: "Уход за ногтями + покрытие лаком",
         price: 2000,
         discountPercentage: 20,
+        thumbnail: "https://i.ibb.co/2d1rL8Q/nails1.jpg",
         images: [
-          "https://i.ibb.co/2d1rL8Q/nails1.jpg"
+          "https://i.ibb.co/2d1rL8Q/nails1.jpg",
+          "https://i.ibb.co/7yKnx9S/nails2.jpg"
         ],
       },
       {
@@ -18,6 +19,7 @@ export async function getProducts() {
         description: "Полный уход за стопами + массаж",
         price: 2500,
         discountPercentage: 15,
+        thumbnail: "https://i.ibb.co/3vF2r0W/pedicure.jpg",
         images: [
           "https://i.ibb.co/3vF2r0W/pedicure.jpg"
         ],
@@ -28,6 +30,7 @@ export async function getProducts() {
         description: "Эффект объёма 2D/3D",
         price: 3000,
         discountPercentage: 10,
+        thumbnail: "https://i.ibb.co/mJjZPkk/lashes.jpg",
         images: [
           "https://i.ibb.co/mJjZPkk/lashes.jpg"
         ],
