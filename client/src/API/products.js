@@ -1,26 +1,62 @@
-const API_URL = "https://dummyjson.com";
+// client/src/API/products.js
 
-export async function getProducts({ category, ...params }) {
-  const search = new URLSearchParams(params);
+export const getCategories = async () => {
+  return [
+    "all",
+    "Маникюр",
+    "Парикмахерские услуги",
+    "Косметология"
+  ];
+};
 
-  const reqUrl =
-    category && category !== "all"
-      ? `${API_URL}/products/category/${category}?${search.toString()}`
-      : `${API_URL}/products?${search.toString()}`;
+export const getProducts = async ({ category, limit }) => {
+  const allProducts = [
+    {
+      id: 1,
+      name: "Маникюр классический",
+      category: "Маникюр",
+      price: 1500,
+      image: "https://via.placeholder.com/300x200?text=Маникюр"
+    },
+    {
+      id: 2,
+      name: "Педикюр",
+      category: "Маникюр",
+      price: 1800,
+      image: "https://via.placeholder.com/300x200?text=Педикюр"
+    },
+    {
+      id: 3,
+      name: "Стрижка женская",
+      category: "Парикмахерские услуги",
+      price: 2500,
+      image: "https://via.placeholder.com/300x200?text=Стрижка"
+    },
+    {
+      id: 4,
+      name: "Окрашивание",
+      category: "Парикмахерские услуги",
+      price: 3500,
+      image: "https://via.placeholder.com/300x200?text=Окрашивание"
+    },
+    {
+      id: 5,
+      name: "Чистка лица",
+      category: "Косметология",
+      price: 3000,
+      image: "https://via.placeholder.com/300x200?text=Чистка+лица"
+    }
+  ];
 
-  const response = await fetch(reqUrl);
-  const data = await response.json();
-  return data;
-}
+  // фильтрация по категории
+  let filtered = category === "all"
+    ? allProducts
+    : allProducts.filter(p => p.category === category);
 
-export async function getCategories() {
-  const response = await fetch(`${API_URL}/products/categories`);
-  const data = await response.json();
-  return ["all", ...data.splice(0, 10)];
-}
+  // ограничение по количеству (limit)
+  if (limit) {
+    filtered = filtered.slice(0, limit);
+  }
 
-export async function getProduct(id) {
-  const response = await fetch(`${API_URL}/product/${id}`);
-  const data = await response.json();
-  return data;
-}
+  return { products: filtered };
+};
