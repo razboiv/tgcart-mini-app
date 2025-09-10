@@ -1,51 +1,64 @@
-// client/src/API/products.js
-
-export async function getCategories() {
-  return ["all", "Маникюр", "Педикюр", "Ресницы"];
-}
+discountPercentage: 8,
+    thumbnail: "https://source.unsplash.com/400x300/?flower-gift-basket",
+    images: [
+      "https://source.unsplash.com/800x600/?gift-basket-flowers",
+      "https://source.unsplash.com/800x600/?flowers-and-chocolates"
+    ],
+    category: "Подарки"
+  },
+  {
+    id: 10,
+    title: "Осенний букет — сезонный",
+    description: "Букет из осенних оттенков: хризантемы, амарантус, декоративная зелень.",
+    price: 2600,
+    discountPercentage: 15,
+    thumbnail: "https://source.unsplash.com/400x300/?autumn-flowers,bouquet",
+    images: [
+      "https://source.unsplash.com/800x600/?autumn-flowers",
+      "https://source.unsplash.com/800x600/?chrysanthemum"
+    ],
+    category: "Сезонные"
+  },
+  {
+    id: 11,
+    title: "Королевский букет — премиум",
+    description: "Эксклюзивная композиция из редких сортов. Под заказ, сроки согласовываются.",
+    price: 12000,
+    discountPercentage: 5,
+    thumbnail: "https://source.unsplash.com/400x300/?luxury-flowers,bouquet",
+    images: [
+      "https://source.unsplash.com/800x600/?luxury-flowers",
+      "https://source.unsplash.com/800x600/?premium-bouquet"
+    ],
+    category: "Букеты"
+  },
+  {
+    id: 12,
+    title: "Мини-букет «Спасибо»",
+    description: "Маленький аккуратный букет, идеально для быстрой благодарности.",
+    price: 900,
+    discountPercentage: 0,
+    thumbnail: "https://source.unsplash.com/400x300/?small-bouquet,thank-you",
+    images: [
+      "https://source.unsplash.com/800x600/?small-bouquet",
+      "https://source.unsplash.com/800x600/?mini-bouquet"
+    ],
+    category: "Подарки"
+  }
+];
 
 export async function getProducts({ category = "all", limit = 20 } = {}) {
-  const allProducts = [
-    {
-      id: 1,
-      title: "Маникюр классический",
-      description: "Уход за ногтями + покрытие лаком",
-      price: 2000,
-      discountPercentage: 20,
-      thumbnail: "https://i.ibb.co/2d1rL8Q/nails1.jpg",
-      images: [
-        "https://i.ibb.co/2d1rL8Q/nails1.jpg",
-        "https://i.ibb.co/7yKnx9S/nails2.jpg"
-      ]
-    },
-    {
-      id: 2,
-      title: "Педикюр SPA",
-      description: "Полный уход за стопами + массаж",
-      price: 2500,
-      discountPercentage: 15,
-      thumbnail: "https://i.ibb.co/3vF2r0W/pedicure.jpg",
-      images: ["https://i.ibb.co/3vF2r0W/pedicure.jpg"]
-    },
-    {
-      id: 3,
-      title: "Наращивание ресниц",
-      description: "Эффект объёма 2D/3D",
-      price: 3000,
-      discountPercentage: 10,
-      thumbnail: "https://i.ibb.co/mJjZPkk/lashes.jpg",
-      images: ["https://i.ibb.co/mJjZPkk/lashes.jpg"]
-    }
-  ];
-
   let filtered =
-    category === "all" ? allProducts : allProducts.filter((p) => p.category === category);
+    category === "all" ? PRODUCTS : PRODUCTS.filter((p) => p.category === category);
 
   if (limit) filtered = filtered.slice(0, limit);
   return { products: filtered };
 }
 
+export async function getCategories() {
+  return ["all", ...new Set(PRODUCTS.map((p) => p.category))];
+}
+
 export async function getProduct(id) {
-  const all = await getProducts();
-  return all.products.find((p) => p.id == id);
+  return PRODUCTS.find((p) => p.id == id);
 }
