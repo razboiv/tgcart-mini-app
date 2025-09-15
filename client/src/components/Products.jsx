@@ -29,7 +29,7 @@ function Products({ products }) {
     return ${product.price} ₽;
   }
 
-  // Пустая строка перед JSX
+  // Пустая строка перед JSX для безопасности esbuild
 
   return (
     <div className="products-container">
