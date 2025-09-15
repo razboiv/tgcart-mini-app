@@ -3,28 +3,29 @@ import useProducts from "../hooks/useProducts";
 import Categories from "./Categories";
 import "./products-style.css";
 import getFinalPrice from "../utils/getFinalPrice";
+import getTelegramEnv from "../utils/getTelegramEnv"; // 🔹 импортируем утилиту
 
 export default function Products() {
-  const { activeCategory, products, categories, setCategory } =
-    useProducts();
-
+  const { activeCategory, products, categories, setCategory } = useProducts();
   const navigate = useNavigate();
+  const tg = getTelegramEnv(); // 🔹 получаем Telegram окружение или фейковое
 
   const shareLink = (product) => {
-    Telegram.WebApp.openTelegramLink(
-      `https://t.me/share/url?text=Hey! Check this incredible deal for ${product.title} at ${import.meta.env.VITE_APP_NAME}&url=https://dummyjson.com/products/${product.id}`
+    tg.openTelegramLink?.(
+      `https://t.me/share/url?text=Hey! Check this incredible deal for ${product.title} at ${
+        import.meta.env.VITE_APP_NAME
+      }&url=https://dummyjson.com/products/${product.id}`
     );
   };
 
   const goToProductView = (product) => {
     navigate(`/product/${product.id}`);
-    Telegram?.WebApp.HapticFeedback.impactOccurred("medium");
-    Telegram.WebApp.BackButton.show();
+    tg.HapticFeedback?.impactOccurred("medium");
+    tg.BackButton?.show();
   };
 
   return (
     <div className="px-2 fadeIn">
-      {import.meta.env.REACT_APP_BACKEND_URL}
       <Categories
         items={categories}
         active={activeCategory}
@@ -32,11 +33,12 @@ export default function Products() {
       />
       <section className="products">
         {products.map((product) => (
-          <div key={product.id} className="product-item ">
+          <div key={product.id} className="product-item">
             <button onClick={() => goToProductView(product)}>
               <img
                 className="w-16 h-14 object-cover rounded"
                 src={product.thumbnail}
+                alt={product.title}
               />
             </button>
             <section className="flex-1">
@@ -67,7 +69,7 @@ export default function Products() {
                     <span className="material-symbols-outlined text-[var(--tg-theme-hint-color)]">
                       shopping_bag
                     </span>
-                    <span>Buy</span>{" "}
+                    <span>Buy</span>
                   </button>
 
                   <button
