@@ -1,106 +1,73 @@
-import { useNavigate } from "react-router-dom";
-import useProducts from "../hooks/useProducts";
-import Categories from "./Categories";
-import "./products-style.css";
-import getFinalPrice from "../utils/getFinalPrice";
+import React, { useState, useEffect } from "react"
+import { getTelegramEnv } from "../utils/telegram"
 
-// Встроенный "фейковый" Telegram.WebApp для браузера
-function getTelegramEnv() {
-  if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
-    return window.Telegram.WebApp;
-  }
-  return {
-    openTelegramLink: (url) => {
-      console.log("Debug openTelegramLink:", url);
-      window.open(url, "_blank");
-    },
-    HapticFeedback: { impactOccurred: (t) => console.log("Haptic:", t) },
-    BackButton: { show: () => console.log("BackButton show") },
-  };
-}
+const Products = ({ products }) => {
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const tg = getTelegramEnv()
 
-export default function Products() {
-  const { activeCategory, products, categories, setCategory } = useProducts();
-  const navigate = useNavigate();
-  const tg = getTelegramEnv();
+  useEffect(() => {
+    tg.ready()
+    tg.expand()
+  }, [tg])
 
-  const shareLink = (product) => {
-    if (tg.openTelegramLink) {
-      tg.openTelegramLink(
-        https://t.me/share/url?text=Hey! Check this incredible deal for ${product.title}&url=https://dummyjson.com/products/${product.id}
-      );
+  const handleSelect = (product) => {
+    setSelectedProduct(product)
+    if (tg.HapticFeedback) {
+      tg.HapticFeedback.impactOccurred("light")
     }
-  };
+  }
 
-  const goToProductView = (product) => {
-    navigate(`/product/${product.id}`);
-    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
-    if (tg.BackButton) tg.BackButton.show();
-  };
+  const handleClose = () => {
+    setSelectedProduct(null)
+  }
 
   return (
-    <div className="px-2 fadeIn">
-      <Categories
-        items={categories}
-        active={activeCategory}
-        onCategoryClick={setCategory}
-      />
-      <section className="products">
-        {products.map((product) => (
-          <div key={product.id} className="product-item ">
-            <button onClick={() => goToProductView(product)}>
+    <div className="products-container">
+      {selectedProduct ? (
+        <div className="product-view">
+          <h2>{selectedProduct.title}</h2>
+          <img
+            src={selectedProduct.thumbnail}
+            alt={selectedProduct.title}
+            style={{ maxWidth: "200px" }}
+          />
+          <p>{selectedProduct.description}</p>
+          <p>
+            Цена:{" "}
+            {selectedProduct.discount
+              ? ${selectedProduct.price - selectedProduct.discount} (скидка ${selectedProduct.discount})
+              : selectedProduct.price}
+            ₽
+          </p>
+          <button onClick={handleClose}>Назад</button>
+        </div>
+      ) : (
+        <div className="product-list">
+          {products.map((p) => (
+            <div
+              key={p.id}
+              className="product-card"
+              onClick={() => handleSelect(p)}
+              style={{
+                border: "1px solid #ccc",
+                padding: "10px",
+                margin: "10px",
+                cursor: "pointer",
+              }}
+            >
               <img
-                className="w-16 h-14 object-cover rounded"
-                src={product.thumbnail}
-                alt={product.title}
+                src={p.thumbnail}
+                alt={p.title}
+                style={{ maxWidth: "150px" }}
               />
-            </button>
-            <section className="flex-1">
-              <div className="font-medium truncate text-sm">
-                {product.title}
-              </div>
-              <div className="text-sm flex gap-2 items-center">
-                <span className=" opacity-50 line-through">
-                  ${product.price}
-                </span>
-                <span>${getFinalPrice(product)}</span>
-                <span className=" text-[var(--tg-theme-link-color)] text-xs">
-                  {Math.ceil(product.discountPercentage)}% off
-                </span>
-              </div>
-            </section>
-            <section className="w-5">
-              <div className="dropdown">
-                <button className="p-2 dropbtn">
-                  <span className="material-symbols-outlined">more_vert</span>
-                </button>
-
-                <div className="dropdown-content text-sm">
-                  <button
-                    onClick={() => goToProductView(product)}
-                    className="w-full gap-2 flex items-center justify-start"
-                  >
-                    <span className="material-symbols-outlined text-[var(--tg-theme-hint-color)]">
-                      shopping_bag
-                    </span>
-                    <span>Buy</span>
-                  </button>
-
-                  <button
-                    onClick={() => shareLink(product)}
-                    className="w-full gap-2 flex items-center justify-start"
-                  >
-                    <span className="material-symbols-outlined text-[var(--tg-theme-hint-color)]">
-                      send
-                    </span>
-                    <span>Share</span>
-                  </button>
-                </div>
-              </div>
-            </section>
-          </div>
-        ))}
-      </section>
+              <h3>{p.title}</h3>
+              <p>{p.price} ₽</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
-  );
+  )
 }
+
+export default Products
