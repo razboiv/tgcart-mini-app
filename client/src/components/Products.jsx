@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getTelegramEnv } from "../utils/telegram";
 
-const Products = ({ products }) => {
+function Products({ products }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const tg = getTelegramEnv();
 
@@ -10,24 +10,24 @@ const Products = ({ products }) => {
     tg.expand();
   }, [tg]);
 
-  const handleSelect = (product) => {
+  function handleSelect(product) {
     setSelectedProduct(product);
     if (tg.HapticFeedback) {
       tg.HapticFeedback.impactOccurred("light");
     }
-  };
+  }
 
-  const handleClose = () => {
+  function handleClose() {
     setSelectedProduct(null);
-  };
+  }
 
-  const renderPrice = (product) => {
+  function renderPrice(product) {
     if (!product) return "";
     if (product.discount) {
       return ${product.price - product.discount} ₽ (скидка ${product.discount} ₽);
     }
     return ${product.price} ₽;
-  };
+  }
 
   return (
     <div className="products-container">
@@ -74,6 +74,6 @@ const Products = ({ products }) => {
       )}
     </div>
   );
-};
+}
 
-export default Products;х
+export default Products;
