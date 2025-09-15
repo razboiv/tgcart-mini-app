@@ -1,6 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { getTelegramEnv } from "../utils/telegram";
 
+// Вынесенные функции
+function handleSelect(product, setSelectedProduct, tg) {
+  setSelectedProduct(product);
+  if (tg.HapticFeedback) {
+    tg.HapticFeedback.impactOccurred("light");
+  }
+}
+
+function handleClose(setSelectedProduct) {
+  setSelectedProduct(null);
+}
+
+function renderPrice(product) {
+  if (!product) return "";
+  if (product.discount) {
+    return ${product.price - product.discount} ₽ (скидка ${product.discount} ₽);
+  }
+  return ${product.price} ₽;
+}
+
 function Products({ products }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const tg = getTelegramEnv();
@@ -9,27 +29,6 @@ function Products({ products }) {
     tg.ready();
     tg.expand();
   }, [tg]);
-
-  function handleSelect(product) {
-    setSelectedProduct(product);
-    if (tg.HapticFeedback) {
-      tg.HapticFeedback.impactOccurred("light");
-    }
-  }
-
-  function handleClose() {
-    setSelectedProduct(null);
-  }
-
-  function renderPrice(product) {
-    if (!product) return "";
-    if (product.discount) {
-      return ${product.price - product.discount} ₽ (скидка ${product.discount} ₽);
-    }
-    return ${product.price} ₽;
-  }
-
-  // Пустая строка перед JSX для безопасности esbuild
 
   return (
     <div className="products-container">
@@ -43,7 +42,7 @@ function Products({ products }) {
           />
           <p>{selectedProduct.description || ""}</p>
           <p>Цена: {renderPrice(selectedProduct)}</p>
-          <button onClick={handleClose}>Назад</button>
+          <button onClick={() => handleClose(setSelectedProduct)}>Назад</button>
         </div>
       ) : (
         <div className="product-list">
@@ -52,7 +51,7 @@ function Products({ products }) {
               <div
                 key={p.id}
                 className="product-card"
-                onClick={() => handleSelect(p)}
+                onClick={() => handleSelect(p, setSelectedProduct, tg)}
                 style={{
                   border: "1px solid #ccc",
                   padding: "10px",
