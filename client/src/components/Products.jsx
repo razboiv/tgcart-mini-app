@@ -21,6 +21,15 @@ const Products = ({ products }) => {
     setSelectedProduct(null);
   };
 
+  // Формируем строку цены заранее, чтобы JSX был простым
+  const renderPrice = (product) => {
+    if (!product) return "";
+    if (product.discount) {
+      return ${product.price - product.discount} ₽ (скидка ${product.discount} ₽);
+    }
+    return ${product.price} ₽;
+  };
+
   return (
     <div className="products-container">
       {selectedProduct ? (
@@ -32,12 +41,7 @@ const Products = ({ products }) => {
             style={{ maxWidth: "200px" }}
           />
           <p>{selectedProduct.description}</p>
-          <p>
-            Цена:{" "}
-            {selectedProduct.discount
-              ? ${selectedProduct.price - selectedProduct.discount} ₽ (скидка ${selectedProduct.discount} ₽)
-              : `${selectedProduct.price} ₽`}
-          </p>
+          <p>Цена: {renderPrice(selectedProduct)}</p>
           <button onClick={handleClose}>Назад</button>
         </div>
       ) : (
@@ -60,7 +64,7 @@ const Products = ({ products }) => {
                 style={{ maxWidth: "150px" }}
               />
               <h3>{p.title}</h3>
-              <p>{p.price} ₽</p>
+              <p>{renderPrice(p)}</p>
             </div>
           ))}
         </div>
