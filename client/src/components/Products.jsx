@@ -29,6 +29,8 @@ function Products({ products }) {
     return ${product.price} ₽;
   }
 
+  // Отделяем все функции пустой строкой перед JSX
+
   return (
     <div className="products-container">
       {selectedProduct ? (
