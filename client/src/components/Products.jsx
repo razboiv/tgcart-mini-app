@@ -35,7 +35,7 @@ const Products = ({ products }) => {
           <p>
             Цена:{" "}
             {selectedProduct.discount
-              ? `${selectedProduct.price - selectedProduct.discount} ₽ (скидка ${selectedProduct.discount} ₽)`
+              ? ${selectedProduct.price - selectedProduct.discount} ₽ (скидка ${selectedProduct.discount} ₽)
               : `${selectedProduct.price} ₽`}
           </p>
           <button onClick={handleClose}>Назад</button>
