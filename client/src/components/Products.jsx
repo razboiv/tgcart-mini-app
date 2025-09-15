@@ -21,7 +21,6 @@ const Products = ({ products }) => {
     setSelectedProduct(null);
   };
 
-  // Формируем цену отдельно для безопасности сборки
   const renderPrice = (product) => {
     if (!product) return "";
     if (product.discount) {
@@ -46,34 +45,35 @@ const Products = ({ products }) => {
         </div>
       ) : (
         <div className="product-list">
-          {products && products.length > 0
-            ? products.map((p) => (
-                <div
-                  key={p.id}
-                  className="product-card"
-                  onClick={() => handleSelect(p)}
-                  style={{
-                    border: "1px solid #ccc",
-                    padding: "10px",
-                    margin: "10px",
-                    cursor: "pointer",
-                  }}
-                >
-                  <img
-                    src={p.thumbnail || ""}
-                    alt={p.title || "product"}
-                    style={{ maxWidth: "150px" }}
-                  />
-                  <h3>{p.title}</h3>
-                  <p>{renderPrice(p)}</p>
-                </div>
-              ))
-            : <p>Нет продуктов</p>
-          }
+          {products && products.length > 0 ? (
+            products.map((p) => (
+              <div
+                key={p.id}
+                className="product-card"
+                onClick={() => handleSelect(p)}
+                style={{
+                  border: "1px solid #ccc",
+                  padding: "10px",
+                  margin: "10px",
+                  cursor: "pointer",
+                }}
+              >
+                <img
+                  src={p.thumbnail || ""}
+                  alt={p.title || "product"}
+                  style={{ maxWidth: "150px" }}
+                />
+                <h3>{p.title}</h3>
+                <p>{renderPrice(p)}</p>
+              </div>
+            ))
+          ) : (
+            <p>Нет продуктов</p>
+          )}
         </div>
       )}
     </div>
   );
 };
 
-export default Products;
+export default Products;х
