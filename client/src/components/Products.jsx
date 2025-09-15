@@ -21,7 +21,6 @@ const Products = ({ products }) => {
     setSelectedProduct(null);
   };
 
-  // Формируем строку цены заранее, чтобы JSX был простым
   const renderPrice = (product) => {
     if (!product) return "";
     if (product.discount) {
