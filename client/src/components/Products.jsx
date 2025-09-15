@@ -3,25 +3,39 @@ import useProducts from "../hooks/useProducts";
 import Categories from "./Categories";
 import "./products-style.css";
 import getFinalPrice from "../utils/getFinalPrice";
-import getTelegramEnv from "../utils/getTelegramEnv"; // 🔹 импортируем утилиту
+
+// Встроенный "фейковый" Telegram.WebApp для браузера
+function getTelegramEnv() {
+  if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
+    return window.Telegram.WebApp;
+  }
+  return {
+    openTelegramLink: (url) => {
+      console.log("Debug openTelegramLink:", url);
+      window.open(url, "_blank");
+    },
+    HapticFeedback: { impactOccurred: (t) => console.log("Haptic:", t) },
+    BackButton: { show: () => console.log("BackButton show") },
+  };
+}
 
 export default function Products() {
   const { activeCategory, products, categories, setCategory } = useProducts();
   const navigate = useNavigate();
-  const tg = getTelegramEnv(); // 🔹 получаем Telegram окружение или фейковое
+  const tg = getTelegramEnv();
 
   const shareLink = (product) => {
-    tg.openTelegramLink?.(
-      `https://t.me/share/url?text=Hey! Check this incredible deal for ${product.title} at ${
-        import.meta.env.VITE_APP_NAME
-      }&url=https://dummyjson.com/products/${product.id}`
-    );
+    if (tg.openTelegramLink) {
+      tg.openTelegramLink(
+        https://t.me/share/url?text=Hey! Check this incredible deal for ${product.title}&url=https://dummyjson.com/products/${product.id}
+      );
+    }
   };
 
   const goToProductView = (product) => {
     navigate(`/product/${product.id}`);
-    tg.HapticFeedback?.impactOccurred("medium");
-    tg.BackButton?.show();
+    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
+    if (tg.BackButton) tg.BackButton.show();
   };
 
   return (
@@ -33,7 +47,7 @@ export default function Products() {
       />
       <section className="products">
         {products.map((product) => (
-          <div key={product.id} className="product-item">
+          <div key={product.id} className="product-item ">
             <button onClick={() => goToProductView(product)}>
               <img
                 className="w-16 h-14 object-cover rounded"
