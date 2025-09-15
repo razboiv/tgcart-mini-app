@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react"
-import { getTelegramEnv } from "../utils/telegram"
+import React, { useState, useEffect } from "react";
+import { getTelegramEnv } from "../utils/telegram";
 
 const Products = ({ products }) => {
-  const [selectedProduct, setSelectedProduct] = useState(null)
-  const tg = getTelegramEnv()
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const tg = getTelegramEnv();
 
   useEffect(() => {
-    tg.ready()
-    tg.expand()
-  }, [tg])
+    tg.ready();
+    tg.expand();
+  }, [tg]);
 
   const handleSelect = (product) => {
-    setSelectedProduct(product)
+    setSelectedProduct(product);
     if (tg.HapticFeedback) {
-      tg.HapticFeedback.impactOccurred("light")
+      tg.HapticFeedback.impactOccurred("light");
     }
-  }
+  };
 
   const handleClose = () => {
-    setSelectedProduct(null)
-  }
+    setSelectedProduct(null);
+  };
 
   return (
     <div className="products-container">
@@ -34,11 +34,9 @@ const Products = ({ products }) => {
           <p>{selectedProduct.description}</p>
           <p>
             Цена:{" "}
-            {(
-              selectedProduct.discount
-                ? ${selectedProduct.price - selectedProduct.discount} ₽ (скидка ${selectedProduct.discount} ₽)
-                : ${selectedProduct.price} ₽
-            )}
+            {selectedProduct.discount
+              ? ${selectedProduct.price - selectedProduct.discount} ₽ (скидка ${selectedProduct.discount} ₽)
+              : `${selectedProduct.price} ₽`}
           </p>
           <button onClick={handleClose}>Назад</button>
         </div>
@@ -68,7 +66,7 @@ const Products = ({ products }) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Products
+export default Products;
